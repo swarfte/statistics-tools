@@ -2,7 +2,7 @@ import abc
 
 
 class Quantitative(metaclass=abc.ABCMeta):
-    def __init__(self, data: list, unit: str = "") -> None:
+    def __init__(self, data: list, unit: str = "units") -> None:
         self.data: list = data
         self.unit: str = unit
         self.mean: float = 0

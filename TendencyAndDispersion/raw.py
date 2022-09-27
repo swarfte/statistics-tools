@@ -4,7 +4,7 @@ import TendencyAndDispersion.base as base
 class RawData(base.Quantitative):
     def __init__(self, data: list, unit: str = "units") -> None:
         self.sort_data: list = sorted(data)
-        super().__init__(data, unit)
+        super().__init__(data)
 
     def get_mean(self) -> str:
         numbers = sum(self.data)

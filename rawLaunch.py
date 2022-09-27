@@ -11,7 +11,8 @@ def run(path: str) -> None:
         reader = csv.reader(f)
         for row in reader:
             for n in row:
-                data.append(float(n))
+                if n != "":
+                    data.append(float(n))
     raw_data = raw.RawData(data)
     raw_data.show()
 
