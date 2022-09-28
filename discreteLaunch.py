@@ -1,7 +1,7 @@
 import os
 import sys
 import csv
-import TendencyAndDispersion.raw as raw
+import TendencyAndDispersion.discrete as discrete
 
 
 def run(path: str) -> None:
@@ -9,23 +9,28 @@ def run(path: str) -> None:
     print(path + "\n")
     with open(path, "r") as f:
         reader = list(csv.reader(f))
-        if len(reader) == 1:
+        size: int = len(reader)
+        if size == 2:
             data = horizontal_mode(reader)
         else:
             data = vertical_mode(reader)
-    raw_data = raw.RawData(data)
-    raw_data.show()
+    discrete_data = discrete.DiscreteData(data)
+    discrete_data.show()
 
 
 def horizontal_mode(reader) -> list:
-    return [float(x) for x in reader[0]]
+    class_x = [float(x) for x in reader[0]]
+    f = [int(x) for x in reader[1]]
+    return [class_x, f]
 
 
 def vertical_mode(reader) -> list:
-    data = []
+    class_x = []
+    f = []
     for row in reader:
-        data.append(float(row[0]))
-    return data
+        class_x.append(float(row[0]))
+        f.append(int(row[1]))
+    return [class_x, f]
 
 
 if __name__ == "__main__":

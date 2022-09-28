@@ -36,7 +36,12 @@ class Quantitative(metaclass=abc.ABCMeta):
     def get_standard_deviation(self) -> str:
         pass
 
+    @abc.abstractmethod
+    def draw_tabel(self) -> str:
+        pass
+
     def run(self) -> None:
+        self.draw_tabel()
         self.get_mean()
         self.get_median()
         self.get_mode()
@@ -45,6 +50,7 @@ class Quantitative(metaclass=abc.ABCMeta):
         self.get_standard_deviation()
 
     def show(self) -> None:
+        print(self.draw_tabel())
         print(self.get_mean())
         print(self.get_median())
         print(self.get_mode())
