@@ -36,9 +36,9 @@ bar x = sigma(fx) / sigma(f)
 N = sigma(f) = {n}
 N / 2 = {n} / 2 = {middle}
 1st c.f >= {middle} is {number}
-Median class is {self.table["classes"][index]}
-L = l.c.b - avg_gap = {l}
-c = u.c.b - l.c.b = {c}
+Median class is '{self.table["classes"][index]}'
+L = {self.table["lcb"][index] + self.avg_gap} - {self.avg_gap} = {l}
+c = {self.table["ucb"][index]} - {self.table["lcb"][index]} = {c}
 f = {f}
 fl = {fl}
 Median = L + ((N / 2 - fl) / f) * c
@@ -63,9 +63,10 @@ Median = L + ((N / 2 - fl) / f) * c
             d1 = self.table["f"][index[i]] - self.table["f"][index[i] - 1]
             d2 = self.table["f"][index[i]] - self.table["f"][index[i] + 1]
             self.mode.append(round(l + (d1 / (d1 + d2)) * c, 2))
-            sentence += f"""Mode class is {mode_classes[i]}
-L = l.c.b = {l}
-c = u.c.b - l.c.b = {c}
+            sentence += f"""Highest freq is {highest_frequency}
+Modal class is '{mode_classes[i]}'
+L = {self.table["lcb"][index[i]] + self.avg_gap} - {self.avg_gap} = {l}
+c = {self.table["ucb"][index[i]]} - {self.table["lcb"][index[i]]} = {c}
 d1 = {self.table["f"][index[i]]} - {self.table["f"][index[i] - 1]} = {d1}
 d2 = {self.table["f"][index[i]]} - {self.table["f"][index[i] + 1]} = {d2}
 Mode = L + (d1 / (d1 + d2)) * c 
@@ -97,7 +98,7 @@ Mode = L + (d1 / (d1 + d2)) * c
         cf: list = []
         fx: list = []
         count: int = 0
-        self.avg_gap = (lcl[1] - ucl[0]) / 2
+        self.avg_gap = round((lcl[1] - ucl[0]) / 2, 5)
         for i in range(len(f)):
             lcb.append(round(lcl[i] - self.avg_gap, 5))
             classes.append(f"{lcl[i]} - {ucl[i]}")
