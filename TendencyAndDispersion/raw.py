@@ -4,6 +4,8 @@ import TendencyAndDispersion.base as base
 class RawData(base.Quantitative):
     def __init__(self, data: list, unit: str = "units") -> None:
         self.sort_data: list = sorted(data)
+        self.square_data: list = list((round(i ** 2, 7) for i in self.sort_data))
+        self.space: int = 10
         super().__init__(data)
 
     def get_mean(self) -> str:
@@ -57,16 +59,30 @@ No mode
                     """
 
     def get_range(self) -> str:
+        self.range: float = self.sort_data[-1] - self.sort_data[0]
         return f"""Range
+R = {self.sort_data[-1]} - {self.sort_data[0]} = {self.range} {self.unit}
         """
 
     def get_variance(self) -> str:
+        numbers: float = sum(self.data)
+        numbers_len: int = len(self.data)
+        self.variance = round((sum(self.square_data) - (len(self.square_data) * (numbers / numbers_len) ** 2)) / (numbers_len - 1),2)
         return f"""Variance
+s^2 = (sigma(x^2) - (n * (sigma(x) / n)^2) )/ (n - 1)
+    = ({round(sum(self.square_data), 7)} - ({len(self.square_data)} * ({round(numbers, 7)} / {numbers_len})^2) )/ ({numbers_len} - 1)
+    = {round(self.variance, 2)} {self.unit}^2
         """
 
     def get_standard_deviation(self) -> str:
+        self.standard_deviation: float = round(self.variance ** 0.5, 2)
         return f"""Standard Deviation
+s = {self.standard_deviation} {self.unit}
         """
 
     def draw_tabel(self) -> str:
-        return f"sorted data : {self.sort_data}"
+        sentence = f"      {'x':<{self.space}}{'x^2':<{self.space}}\n"
+        for i in range(len(self.sort_data)):
+            sentence += f"      {self.sort_data[i]:<{self.space}}{self.square_data[i]:<{self.space}}\n"
+        sentence += f"sigma {round(sum(self.sort_data), 7):<{self.space}}{round(sum(self.square_data), 7):<{self.space}}\n"
+        return f"sorted data : {self.sort_data} \n {sentence}"

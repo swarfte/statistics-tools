@@ -19,9 +19,9 @@ def test_continuous():
 
 
 def run() -> None:
-    # test_raw()
+    test_raw()
     # test_discrete()
-    test_continuous()
+    # test_continuous()
     pass
 
 
