@@ -76,15 +76,24 @@ Mode = L + (d1 / (d1 + d2)) * c
             return sentence
 
     def get_range(self) -> str:
+        self.range = round(self.table["ucb"][-1] - self.table["lcb"][0], 7)
         return f"""Range
+range = {self.table["ucb"][-1]} - {self.table["lcb"][0]} = {self.range} {self.unit}
         """
 
     def get_variance(self) -> str:
+        self.variance = round(
+            (self.sigma_table[7] - ((self.sigma_table[6] ** 2) / self.sigma_table[4])) / (self.sigma_table[4] - 1), 2)
         return f"""Variance
+s^2 = (sigma(f * x ^ 2) - ((sigma(f * x) ^ 2) / sigma(f)) / (sigma(f) - 1)
+    = ({self.sigma_table[7]} - (({self.sigma_table[6]} ^ 2) / {self.sigma_table[4]})) / ({self.sigma_table[4]} - 1)
+    = {self.variance} {self.unit} ^ 2
         """
 
     def get_standard_deviation(self) -> str:
+        self.standard_deviation = round(self.variance ** 0.5, 2)
         return f"""Standard Deviation
+s = {self.standard_deviation} {self.unit}
         """
 
     def draw_tabel(self) -> str:
@@ -97,6 +106,7 @@ Mode = L + (d1 / (d1 + d2)) * c
         f: list = self.data[2]
         cf: list = []
         fx: list = []
+        fxx: list = []
         count: int = 0
         self.avg_gap = round((lcl[1] - ucl[0]) / 2, 5)
         for i in range(len(f)):
@@ -107,6 +117,7 @@ Mode = L + (d1 / (d1 + d2)) * c
             fx.append(round(f[i] * mid_points[i], 5))
             count += f[i]
             cf.append(count)
+            fxx.append(round(f[i] * (mid_points[i] ** 2), 5))
         self.table["lcb"] = lcb
         self.table["classes"] = classes
         self.table["ucb"] = ucb
@@ -114,12 +125,12 @@ Mode = L + (d1 / (d1 + d2)) * c
         self.table["f"] = f
         self.table["cf"] = cf
         self.table["fx"] = fx
-        self.sigma_table = ["sigma", "", "", "", sum(f), "", sum(fx)]
+        self.table["fxx"] = fxx
+        self.sigma_table = ["sigma", "", "", "", sum(f), "", sum(fx), sum(fxx)]
         sentence: str = "continuous table\n"
-        sentence += f"{'l.c.b':<{self.space}}{'class':<{self.space}}{'u.c.b':<{self.space}}{'mid-point(x)':{self.space}}{'f':{self.space}}{'cf':{self.space}}{'fx':{self.space}}\n"
+        sentence += f"{'l.c.b':<{self.space}}{'class':<{self.space}}{'u.c.b':<{self.space}}{'mid-point(x)':{self.space}}{'f':{self.space}}{'cf':{self.space}}{'fx':{self.space}}{'fx^2':{self.space}}\n"
         for i in range(len(classes)):
-            sentence += f"{lcb[i]:<{self.space}}{classes[i]:<{self.space}}{ucb[i]:<{self.space}}{mid_points[i]:<{self.space}}{f[i]:<{self.space}}{cf[i]:<{self.space}}{fx[i]:<{self.space}}\n"
-
+            sentence += f"{lcb[i]:<{self.space}}{classes[i]:<{self.space}}{ucb[i]:<{self.space}}{mid_points[i]:<{self.space}}{f[i]:<{self.space}}{cf[i]:<{self.space}}{fx[i]:<{self.space}}{fxx[i]:<{self.space}}\n"
         for i in range(len(self.sigma_table)):
             sentence += f"{self.sigma_table[i]:<{self.space}}"
         sentence += "\n"

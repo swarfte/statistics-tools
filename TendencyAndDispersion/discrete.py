@@ -13,21 +13,24 @@ class DiscreteData(base.Quantitative):
         f: list = self.data[1]
         cf: list = []
         fx: list = []
+        fxx: list = []
         count: int = 0
         for i in range(len(class_x)):
             count += f[i]
             cf.append(count)
             fx.append(class_x[i] * f[i])
+            fxx.append(class_x[i] ** 2 * f[i])
         self.table["class_x"] = class_x
         self.table["f"] = f
         self.table["cf"] = cf
         self.table["fx"] = fx
-        self.sigma_table = ["sigma", sum(f), "", sum(fx)]
+        self.table["fxx"] = fxx
+        self.sigma_table = ["sigma", sum(f), "", sum(fx), sum(fxx)]
         sentence: str = "discrete table\n"
-        sentence += f"{'class(x)':<{self.space}}{'f':<{self.space}}{'cf':<{self.space}}{'fx':<{self.space}}"
+        sentence += f"{'class(x)':<{self.space}}{'f':<{self.space}}{'cf':<{self.space}}{'fx':<{self.space}}{'fx^2':<{self.space}}"
         for i in range(len(class_x)):
-            sentence += f"\n{class_x[i]:<{self.space}}{f[i]:<{self.space}}{cf[i]:<{self.space}}{fx[i]:<{self.space}}"
-        sentence += f"\n{self.sigma_table[0]:<{self.space}}{self.sigma_table[1]:<{self.space}}{self.sigma_table[2]:<{self.space}}{self.sigma_table[3]:<{self.space}}\n"
+            sentence += f"\n{class_x[i]:<{self.space}}{f[i]:<{self.space}}{cf[i]:<{self.space}}{fx[i]:<{self.space}}{fxx[i]:<{self.space}}"
+        sentence += f"\n{self.sigma_table[0]:<{self.space}}{self.sigma_table[1]:<{self.space}}{self.sigma_table[2]:<{self.space}}{self.sigma_table[3]:<{self.space}}{self.sigma_table[4]:<{self.space}}\n"
         return sentence
 
     def get_mean(self) -> str:
@@ -74,12 +77,20 @@ mode = {self.mode} {self.unit}
 
     def get_range(self) -> str:
         return f"""Range
+range = {self.table['class_x'][-1]} - {self.table['class_x'][0]} = {self.table['class_x'][-1] - self.table['class_x'][0]} {self.unit}
         """
 
     def get_variance(self) -> str:
+        self.variance = round(
+            (self.sigma_table[4] - ((self.sigma_table[3] ** 2) / self.sigma_table[1])) / (self.sigma_table[1] - 1), 2)
         return f"""Variance
+s^2 = (sigma(f * x ^ 2) - ((sigma(f * x) ^ 2) / sigma(f)) / (sigma(f) - 1)
+    = ({self.sigma_table[4]} - (({self.sigma_table[3]} ^ 2) / {self.sigma_table[1]})) / ({self.sigma_table[1]} - 1)
+    = {self.variance} {self.unit} ^ 2
         """
 
     def get_standard_deviation(self) -> str:
+        self.standard_deviation = round(self.variance ** 0.5, 2)
         return f"""Standard Deviation
+s = {self.standard_deviation} {self.unit}
         """
