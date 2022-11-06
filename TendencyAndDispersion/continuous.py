@@ -108,16 +108,16 @@ s = {self.standard_deviation} {self.unit}
         fx: list = []
         fxx: list = []
         count: int = 0
-        self.avg_gap = round((lcl[1] - ucl[0]) / 2, 5)
+        self.avg_gap = round((lcl[1] - ucl[0]) / 2, 7)
         for i in range(len(f)):
-            lcb.append(round(lcl[i] - self.avg_gap, 5))
+            lcb.append(round(lcl[i] - self.avg_gap, 7))
             classes.append(f"{lcl[i]} - {ucl[i]}")
-            ucb.append(round(ucl[i] + self.avg_gap, 5))
-            mid_points.append(round((lcl[i] + ucl[i]) / 2, 2))
-            fx.append(round(f[i] * mid_points[i], 5))
+            ucb.append(round(ucl[i] + self.avg_gap, 7))
+            mid_points.append(round((lcl[i] + ucl[i]) / 2, 7))
+            fx.append(round(f[i] * mid_points[i], 7))
             count += f[i]
             cf.append(count)
-            fxx.append(round(f[i] * (mid_points[i] ** 2), 5))
+            fxx.append(round(f[i] * (mid_points[i] ** 2), 7))
         self.table["lcb"] = lcb
         self.table["classes"] = classes
         self.table["ucb"] = ucb
